@@ -17,25 +17,33 @@ const employeeData = [
    { id: "00-02", name: "prasad", age: 32, email: "prasad@tutorialspoint.com" }
 ];
 var db;
-var request = window.indexedDB.open("newDatabase", 1);
-
-request.onerror = function(event) {
-   console.log("error: ");
-};
-
-request.onsuccess = function(event) {
-   db = request.result;
-   console.log("success: "+ db);
-};
-
-request.onupgradeneeded = function(event) {
-   var db = event.target.result;
-   var objectStore = db.createObjectStore("employee", {keyPath: "id"});
-   
-   for (var i in employeeData) {
-      objectStore.add(employeeData[i]);
+var _request;
+class JsonSaver {
+   *SetUpDatabase(databaseName, version) {
+      this.request = window.indexedDB.open(databaseName, version);
    }
-}
+
+   SetOnError(errorCB) {
+      this.request.onerror = errorCB;
+   }
+
+   SetOnSuccess(successCB) {
+      this.request.onsuccess = successCB;
+   }
+
+   SetOnUpgradeNeeded(upgradeCB) {
+      this.request.onupgradeneeded = upgradeCB;
+   }
+} 
+
+// request.onupgradeneeded = function(event) {
+//    var db = event.target.result;
+//    var objectStore = db.createObjectStore("employee", {keyPath: "id"});
+   
+//    for (var i in employeeData) {
+//       objectStore.add(employeeData[i]);
+//    }
+// }
 
 function read() {
    var transaction = db.transaction(["employee"]);
